@@ -1,12 +1,12 @@
 package net.tanguydev.billingservice.Feign;
 
-import net.tanguydev.billingservice.entities.Product;
+import net.tanguydev.billingservice.model.Product;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "inventory-service")
+@FeignClient(name = "INVENTORY-SERVICE")
 public interface ProductRestClient {
     @GetMapping("/products/{id}")
     Product getProductById(@PathVariable Long id);
