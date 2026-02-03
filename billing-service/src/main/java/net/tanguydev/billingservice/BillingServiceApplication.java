@@ -1,10 +1,10 @@
 package net.tanguydev.billingservice;
 
-import net.tanguydev.billingservice.Feign.CustomerRestClient;
-import net.tanguydev.billingservice.Feign.ProductRestClient;
+import net.tanguydev.billingservice.Feign.CustomerServiceRestClient;
+import net.tanguydev.billingservice.Feign.ProductServiceRestClient;
 import net.tanguydev.billingservice.entities.Bill;
-import net.tanguydev.billingservice.entities.Customer;
-import net.tanguydev.billingservice.entities.Product;
+import net.tanguydev.billingservice.model.Customer;
+import net.tanguydev.billingservice.model.Product;
 import net.tanguydev.billingservice.entities.ProductItem;
 import net.tanguydev.billingservice.repositories.BillRepository;
 import net.tanguydev.billingservice.repositories.ProductItemRepository;
@@ -13,11 +13,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import tools.jackson.databind.json.JsonMapper;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -30,32 +27,30 @@ public class BillingServiceApplication {
     @Bean
     CommandLineRunner init(BillRepository billRepository,
                            ProductItemRepository  productItemRepository,
-                           CustomerRestClient customerRestClient,
-                           ProductRestClient  productRestClient
+                           CustomerServiceRestClient customerServiceRestClient,
+                           ProductServiceRestClient productServiceRestClient
                            ) {
         return args -> {
-            Collection <Customer> customers = customerRestClient.getCustomers().getContent();
-            Collection <Product> products = productRestClient.getProducts().getContent();
+            List<Long> productIds = List.of(1L, 2L, 3L);
+            List<Long> customerIds = List.of(1L, 2L, 3L);
 
-            customers.forEach(customer -> {
-                Bill bill = Bill.builder()
-                        .billingDate(new Date())
-                        .customerId(customer.getId())
-                        .build();
-
+            customerIds.forEach(client -> {
+                Bill bill = new Bill();
+                bill.setCustomerId(client);
+                bill.setBillingDate(new Date());
                 billRepository.save(bill);
 
-                products.forEach(product -> {
-                    ProductItem productItem = ProductItem.builder()
-                            .bill(bill)
-                            .productId(product.getId())
-                            .quantity(1+ new Random().nextInt(10))
-                            .unitPrice(product.getPrice())
-                            .build();
-
+                productIds.forEach(productId -> {
+                    ProductItem productItem = new ProductItem();
+                    productItem.setProductId(productId);
+                    productItem.setUnitPrice(1000*Math.random()*6000);
+                    productItem.setQuantity(new Random().nextInt(20)+1);
+                    productItem.setProductId(productId);
+                    productItem.setBill(bill);
                     productItemRepository.save(productItem);
                 });
-            });
+
+                });
         };
     }
 

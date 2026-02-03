@@ -1,4 +1,4 @@
-package net.tanguydev.billingservice.entities;
+package net.tanguydev.billingservice.model;
 
 import lombok.Getter;
 import lombok.Setter;

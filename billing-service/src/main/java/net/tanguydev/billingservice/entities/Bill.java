@@ -2,6 +2,7 @@ package net.tanguydev.billingservice.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import net.tanguydev.billingservice.model.Customer;
 
 import java.util.ArrayList;
 import java.util.Date;
