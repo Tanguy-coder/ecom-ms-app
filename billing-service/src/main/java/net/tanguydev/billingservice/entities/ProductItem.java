@@ -1,9 +1,9 @@
 package net.tanguydev.billingservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.math.BigDecimal;
+import net.tanguydev.billingservice.model.Product;
 
 @Entity
 @Getter
@@ -15,10 +15,11 @@ public class ProductItem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long productId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Bill bill;
     private int quantity;
     private double unitPrice;
     @Transient
     private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Bill bill;
 }
